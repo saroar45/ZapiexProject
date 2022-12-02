@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zapiex</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.icon-icons.com/icons2/2699/PNG/512/aliexpress_logo_icon_167892.png">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="card-body">
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Zapiex API</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+<div class="container" style="margin-top: 10px;">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <form class="d-flex" role="search" id="fid" enctype="multipart/form-data">
+                    <input autocomplete="off" class="form-control me-2" type="text" name="img_url" id="img_url" placeholder="url of image" aria-label="Search"
+                    value="https://ae01.alicdn.com/kf/HTB1cURNqbGYBuNjy0Foq6AiBFXaQ/Liseaven-T-Shirt-Men-Cotton-T-Shirt-Full-Sleeve-tshirt-Men-Solid-Color-T-shirts-tops.jpg"
+                    disabled>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <h1>Product details</h1>
+    <table class="table" id="p_table">
+        <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Picture</th>
+            <th scope="col">Number of sales</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+
+<script src="js/jquery.js"></script>
+<script src="js/propper.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<!-- zapiex api scripts -->
+<script>
+    $("#fid").submit(function (event) {
+        var apiKey = "0DkPsxSIOh5PaBNCUnMwM9E26K5qzWVS1bMVd8eK";
+        $.ajax({
+            type: "POST",
+            url: 'https://api.zapiex.com/v3/image/search',
+            dataType:"json",
+            data: {
+
+                uploadKey: "6b035aae2c0e69c47b902e4d7be1b20273959dfc845b7a74da7bcc59681bc833c3450bd309a84d74d5580f2d63c3b1ce26d4bf70deef5da0c2bd0cc9fdba472a5f6f56b1499056f4953b4401e66be309",
+                currency: "EUR",
+                locale: "en_US",
+                sort: "BEST_MATCH",
+                filter: "AUTO"
+            },
+            headers: { "x-api-key": apiKey },
+            success: function(response){
+                //if request if made successfully then the response represent the data
+               var res = response.data.items;
+               console.log(res);
+                var html = '';
+               for (var i = 0; i < res.length; i++){
+                   html += '<tr><th scope="row">'+res[i].title+'</th><td>€'+res[i].productMinPrice.value+'</td><td><img width="50" height="50" src="'+res[i].imageUrl+'"></td><td>'+res[i].totalOrders+'</td></tr>';
+               }
+                $('#p_table tr').first().after(html);
+
+            },
+            error: function (e){
+                console.log(e);
+            }
+        });
+
+        event.preventDefault();
+    });
+</script>
+</body>
+</html>
